@@ -1,1 +1,10 @@
-﻿Microsoft.TemplateEngine.Abstractions.ITemplateInfo.PostActions.get -> System.Collections.Generic.IReadOnlyList<System.Guid>!
+﻿const Microsoft.TemplateEngine.Abstractions.TemplateFiltering.MatchInfo.BuiltIn.Constraint = "Constraint" -> string!
+Microsoft.TemplateEngine.Abstractions.ITemplateConstraint
+Microsoft.TemplateEngine.Abstractions.ITemplateConstraintFactory
+Microsoft.TemplateEngine.Abstractions.ITemplateInfo.PostActions.get -> System.Collections.Generic.IReadOnlyList<System.Guid>!
+Microsoft.TemplateEngine.Abstractions.TemplateConstraintResult
+Microsoft.TemplateEngine.Abstractions.TemplateConstraintResult.Visible.get -> bool
+~Microsoft.TemplateEngine.Abstractions.ITemplateConstraint.Evaluate(Microsoft.TemplateEngine.Abstractions.ITemplateInfo templateInfo) -> Microsoft.TemplateEngine.Abstractions.TemplateConstraintResult
+~Microsoft.TemplateEngine.Abstractions.ITemplateConstraintFactory.CreateTemplateConstraint(Microsoft.TemplateEngine.Abstractions.IEngineEnvironmentSettings environmentSettings) -> Microsoft.TemplateEngine.Abstractions.ITemplateConstraint
+~Microsoft.TemplateEngine.Abstractions.TemplateConstraintResult.LocalizedMessage.get -> string
+~Microsoft.TemplateEngine.Abstractions.TemplateConstraintResult.TemplateConstraintResult(bool visible, string localizedMessage) -> void

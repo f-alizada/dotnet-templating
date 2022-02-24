@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.TemplateEngine.Abstractions;
 using Microsoft.TemplateEngine.Abstractions.TemplateFiltering;
@@ -221,6 +222,22 @@ namespace Microsoft.TemplateEngine.Utils
                     return new MatchInfo(MatchInfo.BuiltIn.Author, author, MatchKind.Partial);
                 }
                 return new MatchInfo(MatchInfo.BuiltIn.Author, author, MatchKind.Mismatch);
+            };
+        }
+
+        public static Func<ITemplateInfo, MatchInfo?> ConstraintFilter(IEnumerable<ITemplateConstraint> constraints)
+        {
+            return (template) =>
+            {
+                foreach (var constraint in constraints)
+                {
+                    var result = constraint.Evaluate(template);
+                    if (!result.Visible)
+                    {
+                        return new MatchInfo(MatchInfo.BuiltIn.Constraint, result.LocalizedMessage, MatchKind.Mismatch);
+                    }
+                }
+                return new MatchInfo(MatchInfo.BuiltIn.Constraint, null, MatchKind.Exact);
             };
         }
     }
