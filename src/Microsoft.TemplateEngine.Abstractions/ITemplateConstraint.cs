@@ -11,10 +11,12 @@ namespace Microsoft.TemplateEngine.Abstractions
     /// </summary>
     public interface ITemplateConstraint
     {
+        string Type { get; }
+
         /// <summary>
         /// Evaluates <see cref="ITemplateInfo"/> and returns <see cref="TemplateConstraintResult"/> containing result.
         /// </summary>
-        public Task<TemplateConstraintResult> EvaluateAsync(ITemplateInfo templateInfo);
+        public TemplateConstraintResult Evaluate(ITemplateConstraintInfo templateInfo);
     }
 }
 

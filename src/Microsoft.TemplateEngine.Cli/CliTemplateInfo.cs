@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Microsoft.TemplateEngine.Abstractions;
+using Microsoft.TemplateEngine.Abstractions.TemplateFiltering;
 using Microsoft.TemplateEngine.Abstractions.TemplatePackage;
 using Microsoft.TemplateEngine.Edge.Settings;
 using Microsoft.TemplateEngine.Utils;
@@ -17,11 +18,14 @@ namespace Microsoft.TemplateEngine.Cli
         private readonly HostSpecificTemplateData _cliData;
         private IReadOnlyDictionary<string, CliTemplateParameter>? _parameters;
 
-        internal CliTemplateInfo(ITemplateInfo templateInfo, HostSpecificTemplateData cliData)
+        internal CliTemplateInfo(ITemplateMatchInfo matchInfo, HostSpecificTemplateData cliData)
         {
-            _templateInfo = templateInfo ?? throw new ArgumentNullException(nameof(templateInfo));
+            _templateInfo = matchInfo?.Info ?? throw new ArgumentNullException(nameof(matchInfo));
+            Match = matchInfo;
             _cliData = cliData ?? throw new ArgumentNullException(nameof(cliData));
         }
+
+        public ITemplateMatchInfo Match { get; }
 
         public string? Author => _templateInfo.Author;
 
@@ -107,7 +111,7 @@ namespace Microsoft.TemplateEngine.Cli
             }
         }
 
-        internal static IEnumerable<CliTemplateInfo> FromTemplateInfo(IEnumerable<ITemplateInfo> templateInfos, IHostSpecificDataLoader hostSpecificDataLoader)
+        internal static IEnumerable<CliTemplateInfo> FromTemplateInfo(IEnumerable<ITemplateMatchInfo> templateInfos, IHostSpecificDataLoader hostSpecificDataLoader)
         {
             if (templateInfos is null)
             {
@@ -119,7 +123,7 @@ namespace Microsoft.TemplateEngine.Cli
                 throw new ArgumentNullException(nameof(hostSpecificDataLoader));
             }
 
-            return templateInfos.Select(templateInfo => new CliTemplateInfo(templateInfo, hostSpecificDataLoader.ReadHostSpecificTemplateData(templateInfo)));
+            return templateInfos.Select(templateInfo => new CliTemplateInfo(templateInfo, hostSpecificDataLoader.ReadHostSpecificTemplateData(templateInfo.Info)));
         }
 
         /// <summary>

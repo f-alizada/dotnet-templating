@@ -43,7 +43,7 @@ namespace Microsoft.TemplateEngine.Cli.PostActionProcessors
             {
                 Reporter.Output.WriteLine(string.Format(LocalizableStrings.RunningCommand, executable + " " + args));
                 string resolvedExecutablePath = ResolveExecutableFilePath(environment.Host.FileSystem, executable, outputBasePath);
-
+                
                 Process? commandResult = System.Diagnostics.Process.Start(new ProcessStartInfo
                 {
                     RedirectStandardError = redirectStandardError,

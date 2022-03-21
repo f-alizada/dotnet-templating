@@ -42,7 +42,8 @@ namespace Microsoft.TemplateEngine.Cli
             {
                 throw new ArgumentException(paramName: nameof(templates), message: "The templates should have same group identity");
             }
-            Templates = templates.ToList();
+            Templates = templates.Where(t => t.Match.MatchDisposition.Single().Kind == Abstractions.TemplateFiltering.MatchKind.Exact).ToList();
+            TemplatesWithoutConstraints = templates.ToList();
         }
 
         /// <summary>
@@ -178,6 +179,8 @@ namespace Microsoft.TemplateEngine.Cli
         /// Returns the list of templates in the group.
         /// </summary>
         internal IReadOnlyList<CliTemplateInfo> Templates { get; private set; }
+
+        internal List<CliTemplateInfo> TemplatesWithoutConstraints { get; }
 
         internal static IEnumerable<TemplateGroup> FromTemplateList (IEnumerable<CliTemplateInfo> templates)
         {

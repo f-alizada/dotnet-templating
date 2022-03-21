@@ -229,9 +229,13 @@ namespace Microsoft.TemplateEngine.Utils
         {
             return (template) =>
             {
-                foreach (var constraint in constraints)
+
+                var constrs = constraints.ToDictionary(c => c.Type, c => c);
+                foreach (var constraint in template.Constraints)
                 {
-                    var result = constraint.Evaluate(template);
+                    var constr = constrs[constraint.Type];
+
+                    var result = constr.Evaluate(constraint);
                     if (!result.Visible)
                     {
                         return new MatchInfo(MatchInfo.BuiltIn.Constraint, result.LocalizedMessage, MatchKind.Mismatch);

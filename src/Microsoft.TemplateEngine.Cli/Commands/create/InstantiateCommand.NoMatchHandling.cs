@@ -127,6 +127,14 @@ namespace Microsoft.TemplateEngine.Cli.Commands
             Reporter reporter)
         {
             List<TemplateResult> matchInfos = CollectTemplateMatchInfo(args, environmentSettings, templatePackageManager, templateGroup);
+
+            if (templateGroup.TemplatesWithoutConstraints.Count != templateGroup.Templates.Count)
+            {
+                reporter.WriteLine(
+                    $"There is {templateGroup.TemplatesWithoutConstraints.Count - templateGroup.Templates.Count} more" +
+                    " templates with same short name, consider using '--ignore-constraints' to evaluate them as well.".Bold().Red());
+            }
+
             //process language, type and baseline errors
             if (!matchInfos.Any(mi => mi.IsTemplateMatch))
             {

@@ -1,1 +1,5 @@
-﻿~Microsoft.TemplateEngine.Edge.FilterableTemplateInfo.PostActions.get -> System.Collections.Generic.IReadOnlyList<System.Guid>
+﻿Microsoft.TemplateEngine.Edge.DefaultConstraints.OSConstraintFactory
+Microsoft.TemplateEngine.Edge.DefaultConstraints.OSConstraintFactory.Id.get -> System.Guid
+Microsoft.TemplateEngine.Edge.DefaultConstraints.OSConstraintFactory.OSConstraintFactory() -> void
+~Microsoft.TemplateEngine.Edge.DefaultConstraints.OSConstraintFactory.CreateTemplateConstraint(Microsoft.TemplateEngine.Abstractions.IEngineEnvironmentSettings environmentSettings) -> Microsoft.TemplateEngine.Abstractions.ITemplateConstraint
+~Microsoft.TemplateEngine.Edge.FilterableTemplateInfo.PostActions.get -> System.Collections.Generic.IReadOnlyList<System.Guid>

@@ -50,9 +50,10 @@ namespace Microsoft.TemplateEngine.Cli.Commands
             InstantiateCommandArgs instantiateArgs,
             TemplatePackageManager templatePackageManager,
             HostSpecificDataLoader hostSpecificDataLoader,
+            Func<ITemplateInfo, Abstractions.TemplateFiltering.MatchInfo?>[] filters,
             CancellationToken cancellationToken)
         {
-            var templates = await templatePackageManager.GetTemplatesAsync(cancellationToken).ConfigureAwait(false);
+            var templates = await templatePackageManager.GetTemplatesAsync((t) => true, filters, cancellationToken).ConfigureAwait(false);
             var templateGroups = TemplateGroup.FromTemplateList(CliTemplateInfo.FromTemplateInfo(templates, hostSpecificDataLoader));
             return templateGroups.Where(template => template.ShortNames.Contains(instantiateArgs.ShortName));
         }
@@ -200,11 +201,15 @@ namespace Microsoft.TemplateEngine.Cli.Commands
 
                 return await templateListCoordinator.DisplayCommandDescriptionAsync(instantiateArgs, cancellationToken).ConfigureAwait(false);
             }
+            var constraintsFactories = environmentSettings.Components.OfType<ITemplateConstraintFactory>();
+            var constraints = constraintsFactories.Select(f => f.CreateTemplateConstraint(environmentSettings));
+            var filters = new[] { WellKnownSearchFilters.ConstraintFilter(constraints) };
 
             var selectedTemplateGroups = await GetMatchingTemplateGroupsAsync(
                 instantiateArgs,
                 templatePackageManager,
                 hostSpecificDataLoader,
+                filters,
                 cancellationToken).ConfigureAwait(false);
 
             if (!selectedTemplateGroups.Any())

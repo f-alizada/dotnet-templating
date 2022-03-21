@@ -46,7 +46,7 @@ namespace Microsoft.TemplateEngine.Cli.PostActionProcessors
                             CreateNoWindow = false,
                             WorkingDirectory = outputBasePath,
                             FileName = "/bin/sh",
-                            Arguments = $"-c \"chmod {entry.Key} {file}\""
+                            Arguments = $"-c \"/bin/chmod {entry.Key} {file}\""
                         });
 
                         if (commandResult == null)

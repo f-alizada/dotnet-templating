@@ -5,6 +5,7 @@ using Microsoft.TemplateEngine.Abstractions;
 using Microsoft.TemplateEngine.Abstractions.TemplateFiltering;
 using Microsoft.TemplateEngine.Cli.Commands;
 using Microsoft.TemplateEngine.Edge.Settings;
+using Microsoft.TemplateEngine.Utils;
 
 namespace Microsoft.TemplateEngine.Cli.TemplateResolution
 {
@@ -13,14 +14,18 @@ namespace Microsoft.TemplateEngine.Cli.TemplateResolution
     /// </summary>
     internal class ListTemplateResolver : BaseTemplateResolver<ListCommandArgs>
     {
-        public ListTemplateResolver(TemplatePackageManager templatePackageManager, IHostSpecificDataLoader hostSpecificDataLoader)
+        private readonly IEngineEnvironmentSettings _engineEnvironmentSettings;
+
+        public ListTemplateResolver(IEngineEnvironmentSettings engineEnvironmentSettings, TemplatePackageManager templatePackageManager, IHostSpecificDataLoader hostSpecificDataLoader)
             : base(templatePackageManager, hostSpecificDataLoader)
         {
+            _engineEnvironmentSettings = engineEnvironmentSettings;
         }
 
-        public ListTemplateResolver(IEnumerable<ITemplateInfo> templateList, IHostSpecificDataLoader hostSpecificDataLoader)
+        public ListTemplateResolver(IEngineEnvironmentSettings engineEnvironmentSettings, IEnumerable<ITemplateInfo> templateList, IHostSpecificDataLoader hostSpecificDataLoader)
        : base(templateList, hostSpecificDataLoader)
         {
+            _engineEnvironmentSettings = engineEnvironmentSettings;
         }
 
         internal override async Task<TemplateResolutionResult> ResolveTemplatesAsync(ListCommandArgs args, string? defaultLanguage, CancellationToken cancellationToken)
@@ -30,11 +35,15 @@ namespace Microsoft.TemplateEngine.Cli.TemplateResolution
             {
                 CliFilters.NameTemplateGroupFilter(args.ListNameCriteria)
             };
+            //--ignore-constraints
+            var constraintsFactories = _engineEnvironmentSettings.Components.OfType<ITemplateConstraintFactory>();
+            var constraints = constraintsFactories.Select(f => f.CreateTemplateConstraint(_engineEnvironmentSettings));
 
             IEnumerable<Func<ITemplateInfo, MatchInfo?>> templateFilters =
                 args.AppliedFilters
                     .OfType<TemplateFilterOptionDefinition>()
-                    .Select(filter => filter.TemplateMatchFilter(args.GetFilterValue(filter)));
+                    .Select(filter => filter.TemplateMatchFilter(args.GetFilterValue(filter)))
+                    .Append(WellKnownSearchFilters.ConstraintFilter(constraints));
 
             IEnumerable<TemplateGroupMatchInfo> matchInformation =
                 templateGroups.Select(
