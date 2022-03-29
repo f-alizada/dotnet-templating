@@ -17,21 +17,21 @@ namespace Microsoft.TemplateEngine.Cli
 
         internal string Command => string.Concat(_info?.FileName, " ", _info?.Arguments);
 
-        internal static Dotnet Restore(params string[] args)
+        internal static bool Restore(string projectPath)
         {
             return new Dotnet
             {
-                _info = new ProcessStartInfo("dotnet", ArgumentEscaper.EscapeAndConcatenateArgArrayForProcessStart(new[] { "restore" }.Concat(args)))
+                _info = new ProcessStartInfo("dotnet", ArgumentEscaper.EscapeAndConcatenateArgArrayForProcessStart(new[] { "restore" }.Append(projectPath)))
                 {
                     UseShellExecute = false,
                     CreateNoWindow = true,
                     RedirectStandardError = true,
                     RedirectStandardOutput = true
                 }
-            };
+            }.ForwardStdOut().ForwardStdErr().Execute().ExitCode == 0;
         }
 
-        internal static Dotnet AddProjectToProjectReference(string projectFile, params string[] args)
+        internal static bool AddProjectToProjectReference(string projectFile, params string[] args)
         {
             return new Dotnet
             {
@@ -42,10 +42,10 @@ namespace Microsoft.TemplateEngine.Cli
                     RedirectStandardError = true,
                     RedirectStandardOutput = true
                 }
-            };
+            }.ForwardStdOut().ForwardStdErr().Execute().ExitCode == 0;
         }
 
-        internal static Dotnet AddPackageReference(string projectFile, string packageName, string? version = null)
+        internal static bool AddPackageReference(string projectFile, string packageName, string? version = null)
         {
             string argString;
             if (version == null)
@@ -66,10 +66,10 @@ namespace Microsoft.TemplateEngine.Cli
                     RedirectStandardError = true,
                     RedirectStandardOutput = true
                 }
-            };
+            }.ForwardStdOut().ForwardStdErr().Execute().ExitCode == 0;
         }
 
-        internal static Dotnet AddProjectsToSolution(string solutionFile, IReadOnlyList<string> projects, string solutionFolder = "")
+        internal static bool AddProjectsToSolution(string solutionFile, IReadOnlyList<string> projects, string solutionFolder = "")
         {
             List<string> allArgs = new List<string>()
             {
@@ -96,21 +96,7 @@ namespace Microsoft.TemplateEngine.Cli
                     RedirectStandardError = true,
                     RedirectStandardOutput = true
                 }
-            };
-        }
-
-        internal static Dotnet Version()
-        {
-            return new Dotnet
-            {
-                _info = new ProcessStartInfo("dotnet", "--version")
-                {
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    RedirectStandardError = true,
-                    RedirectStandardOutput = true
-                }
-            };
+            }.ForwardStdOut().ForwardStdErr().Execute().ExitCode == 0;
         }
 
         internal Dotnet ForwardStdErr()
@@ -122,20 +108,6 @@ namespace Microsoft.TemplateEngine.Cli
         internal Dotnet ForwardStdOut()
         {
             _outputDataReceived = ForwardStreamStdOut;
-            return this;
-        }
-
-        internal Dotnet CaptureStdOut()
-        {
-            _stdout = new StringBuilder();
-            _outputDataReceived += CaptureStreamStdOut;
-            return this;
-        }
-
-        internal Dotnet CaptureStdErr()
-        {
-            _stderr = new StringBuilder();
-            _errorDataReceived += CaptureStreamStdErr;
             return this;
         }
 
@@ -180,16 +152,6 @@ namespace Microsoft.TemplateEngine.Cli
             }
 
             Console.Error.WriteLine(e.Data);
-        }
-
-        private void CaptureStreamStdOut(object sender, DataReceivedEventArgs e)
-        {
-            _stdout?.AppendLine(e.Data);
-        }
-
-        private void CaptureStreamStdErr(object sender, DataReceivedEventArgs e)
-        {
-            _stderr?.AppendLine(e.Data);
         }
 
         private void OnOutputDataReceived(object sender, DataReceivedEventArgs e)

@@ -42,7 +42,13 @@ namespace Microsoft.TemplateEngine.Cli.PostActionProcessors
             try
             {
                 Reporter.Output.WriteLine(string.Format(LocalizableStrings.RunningCommand, executable + " " + args));
-                string resolvedExecutablePath = ResolveExecutableFilePath(environment.Host.FileSystem, executable, outputBasePath);
+                string? resolvedExecutablePath = ResolveExecutableFilePath(environment.Host.FileSystem, executable, outputBasePath);
+
+                if (resolvedExecutablePath == null)
+                {
+                    Reporter.Error.WriteLine(string.Format(LocalizableStrings.PostAction_ProcessStartProcessor_Error_FailedToResolveExecutable));
+                    return false;
+                }
 
                 Process? commandResult = System.Diagnostics.Process.Start(new ProcessStartInfo
                 {
@@ -87,7 +93,7 @@ namespace Microsoft.TemplateEngine.Cli.PostActionProcessors
             }
         }
 
-        private static string ResolveExecutableFilePath(IPhysicalFileSystem fileSystem, string executableFileName, string outputBasePath)
+        private static string? ResolveExecutableFilePath(IPhysicalFileSystem fileSystem, string executableFileName, string outputBasePath)
         {
             if (!string.IsNullOrEmpty(outputBasePath) && fileSystem.DirectoryExists(outputBasePath))
             {
@@ -100,7 +106,7 @@ namespace Microsoft.TemplateEngine.Cli.PostActionProcessors
 
             // The executable has not been found in the template folder, thus do not use the full path to the file.
             // The executable will be further searched in the directories from the PATH environment variable.
-            return executableFileName;
+            return null;
         }
     }
 }

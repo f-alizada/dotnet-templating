@@ -508,6 +508,11 @@ The header is followed by the list of parameters and their errors (might be seve
         <target state="translated">예:</target>
         <note />
       </trans-unit>
+      <trans-unit id="HostDoesntImplementCallback">
+        <source>Host does not implement {0} callback.</source>
+        <target state="new">Host does not implement {0} callback.</target>
+        <note />
+      </trans-unit>
       <trans-unit id="HostSpecificDataLoader_Warning_FailedToRead">
         <source>Failed to load dotnet CLI host data for template {0} from cache.</source>
         <target state="translated">캐시에서 템플릿 {0}에 대한 dotnet CLI 호스트 데이터를 로드하지 못했습니다.</target>
@@ -744,6 +749,11 @@ The header is followed by the list of parameters and their errors (might be seve
       <trans-unit id="PostAction_ProcessStartProcessor_Error_ConfigMissingExecutable">
         <source>Failed to run the command: argument 'executable' is missing in post action configuration.</source>
         <target state="translated">명령을 실행하지 못했습니다. 게시 작업 구성에 'executable' 인수가 없습니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="PostAction_ProcessStartProcessor_Error_FailedToResolveExecutable">
+        <source>Failed to resolve executable.</source>
+        <target state="new">Failed to resolve executable.</target>
         <note />
       </trans-unit>
       <trans-unit id="ProcessingPostActions">

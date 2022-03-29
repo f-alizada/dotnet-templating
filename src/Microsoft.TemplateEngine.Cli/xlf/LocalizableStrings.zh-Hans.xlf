@@ -508,6 +508,11 @@ The header is followed by the list of parameters and their errors (might be seve
         <target state="translated">示例: </target>
         <note />
       </trans-unit>
+      <trans-unit id="HostDoesntImplementCallback">
+        <source>Host does not implement {0} callback.</source>
+        <target state="new">Host does not implement {0} callback.</target>
+        <note />
+      </trans-unit>
       <trans-unit id="HostSpecificDataLoader_Warning_FailedToRead">
         <source>Failed to load dotnet CLI host data for template {0} from cache.</source>
         <target state="translated">无法从缓存加载模板 {0} 的 dotnet CLI 主机数据。</target>
@@ -744,6 +749,11 @@ The header is followed by the list of parameters and their errors (might be seve
       <trans-unit id="PostAction_ProcessStartProcessor_Error_ConfigMissingExecutable">
         <source>Failed to run the command: argument 'executable' is missing in post action configuration.</source>
         <target state="translated">无法运行命令: 在发布操作配置中缺少参数“可执行”。</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="PostAction_ProcessStartProcessor_Error_FailedToResolveExecutable">
+        <source>Failed to resolve executable.</source>
+        <target state="new">Failed to resolve executable.</target>
         <note />
       </trans-unit>
       <trans-unit id="ProcessingPostActions">

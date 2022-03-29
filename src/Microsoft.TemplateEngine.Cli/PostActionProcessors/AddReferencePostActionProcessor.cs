@@ -112,24 +112,30 @@ namespace Microsoft.TemplateEngine.Cli.PostActionProcessors
             if (nearestProjectFilesFound.Count == 1)
             {
                 string projectFile = nearestProjectFilesFound[0];
-                Dotnet.Result commandResult;
+                bool commandResult;
 
                 if (string.Equals(referenceType, "project", StringComparison.OrdinalIgnoreCase))
                 {
+                    var callback = Callbacks?.AddProjectReferences;
+                    if (callback == null)
+                    {
+                        Reporter.Error.WriteLine(string.Format(LocalizableStrings.HostDoesntImplementCallback, nameof(Callbacks.AddProjectReferences)));
+                        return false;
+                    }
                     // actually do the add ref
-                    Dotnet addReferenceCommand = Dotnet.AddProjectToProjectReference(projectFile, referenceToAdd);
-                    addReferenceCommand.CaptureStdOut();
-                    addReferenceCommand.CaptureStdErr();
                     Reporter.Output.WriteLine(string.Format(LocalizableStrings.AddRefPostActionAddProjectRef, projectFile, referenceToAdd));
-                    commandResult = addReferenceCommand.Execute();
+                    commandResult = callback(projectFile, referenceToAdd);
                 }
                 else if (string.Equals(referenceType, "package", StringComparison.OrdinalIgnoreCase))
                 {
+                    var callback = Callbacks?.AddPackageReference;
+                    if (callback == null)
+                    {
+                        Reporter.Error.WriteLine(string.Format(LocalizableStrings.HostDoesntImplementCallback, nameof(Callbacks.AddPackageReference)));
+                        return false;
+                    }
                     actionConfig.Args.TryGetValue("version", out string? version);
 
-                    Dotnet addReferenceCommand = Dotnet.AddPackageReference(projectFile, referenceToAdd, version);
-                    addReferenceCommand.CaptureStdOut();
-                    addReferenceCommand.CaptureStdErr();
                     if (string.IsNullOrEmpty(version))
                     {
                         Reporter.Output.WriteLine(string.Format(LocalizableStrings.AddRefPostActionAddPackageRef, projectFile, referenceToAdd));
@@ -138,7 +144,7 @@ namespace Microsoft.TemplateEngine.Cli.PostActionProcessors
                     {
                         Reporter.Output.WriteLine(string.Format(LocalizableStrings.AddRefPostActionAddPackageRefWithVersion, projectFile, referenceToAdd, version));
                     }
-                    commandResult = addReferenceCommand.Execute();
+                    commandResult = callback(projectFile, referenceToAdd, version);
                 }
                 else if (string.Equals(referenceType, "framework", StringComparison.OrdinalIgnoreCase))
                 {
@@ -151,11 +157,9 @@ namespace Microsoft.TemplateEngine.Cli.PostActionProcessors
                     return false;
                 }
 
-                if (commandResult.ExitCode != 0)
+                if (!commandResult)
                 {
                     Reporter.Error.WriteLine(string.Format(LocalizableStrings.AddRefPostActionFailed, referenceToAdd, projectFile));
-                    Reporter.Error.WriteCommandOutput(commandResult);
-                    Reporter.Error.WriteLine(string.Empty);
                     return false;
                 }
                 else

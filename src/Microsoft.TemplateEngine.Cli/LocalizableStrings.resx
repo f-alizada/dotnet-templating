@@ -774,6 +774,9 @@ The header is followed by the list of parameters and their errors (might be seve
     <value>Argument(s) {0} are not recognized. Must be one of: {1}.</value>
     <comment>{0} - comma-separated quoted list of argument value(s) given by user, {1} - comma-separated quoted list of allowed values.</comment>
   </data>
+  <data name="PostAction_ProcessStartProcessor_Error_FailedToResolveExecutable" xml:space="preserve">
+    <value>Failed to resolve executable.</value>
+  </data>
   <data name="TemplatePackageCoordinator_Install_Info_OverrideNotice" xml:space="preserve">
     <value>Installing the template package(s) will override the available template package(s).</value>
   </data>
@@ -792,6 +795,9 @@ The header is followed by the list of parameters and their errors (might be seve
   <data name="TemplatePackageCoordinator_BuiltInCheck_Info_UninstallPackage" xml:space="preserve">
     <value>To use built-in template package, uninstall manually installed template package using:</value>
     <comment>followed by command to uninstall package</comment>
+  </data>
+  <data name="HostDoesntImplementCallback" xml:space="preserve">
+    <value>Host does not implement {0} callback.</value>
   </data>
   <data name="Commands_Warning_DeprecatedCommand" xml:space="preserve">
     <value>Warning: use of '{0}' is deprecated. Use '{1}' instead.</value>

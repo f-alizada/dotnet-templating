@@ -27,7 +27,13 @@ namespace Dotnet_new3
                 CommandName,
                 (ParseResult parseResult) => HostFactory.CreateHost(parseResult.GetValueForOption(_debugDisableBuiltInTemplatesOption)),
                 (ParseResult parseResult) => new TelemetryLogger(null, parseResult.GetValueForOption(_debugEmitTelemetryOption)),
-                new NewCommandCallbacks());
+                new NewCommandCallbacks()
+                {
+                    RestoreProject = Dotnet.Restore,
+                    AddPackageReference = Dotnet.AddPackageReference,
+                    AddProjectsToSolution = Dotnet.AddProjectsToSolution,
+                    AddProjectReferences = Dotnet.AddProjectToProjectReference
+                });
 
             newCommand.AddGlobalOption(_debugEmitTelemetryOption);
             newCommand.AddGlobalOption(_debugDisableBuiltInTemplatesOption);

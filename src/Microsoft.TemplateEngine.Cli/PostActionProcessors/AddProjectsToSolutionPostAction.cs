@@ -83,18 +83,21 @@ namespace Microsoft.TemplateEngine.Cli.PostActionProcessors
                 }
             }
 
-            string solutionFolder = GetSolutionFolder(action);
-            Dotnet addProjToSlnCommand = Dotnet.AddProjectsToSolution(nearestSlnFilesFound[0], projectFiles, solutionFolder);
-            addProjToSlnCommand.CaptureStdOut();
-            addProjToSlnCommand.CaptureStdErr();
-            Reporter.Output.WriteLine(string.Format(LocalizableStrings.AddProjToSlnPostActionRunning, addProjToSlnCommand.Command));
-            Dotnet.Result commandResult = addProjToSlnCommand.Execute();
+            var callback = Callbacks?.AddProjectsToSolution;
+            if (callback == null)
+            {
+                Reporter.Error.WriteLine(string.Format(LocalizableStrings.HostDoesntImplementCallback, nameof(Callbacks.AddProjectsToSolution)));
+                return false;
+            }
 
-            if (commandResult.ExitCode != 0)
+            string solutionFolder = GetSolutionFolder(action);
+            //TODO: Change text...
+            Reporter.Output.WriteLine(string.Format(LocalizableStrings.AddProjToSlnPostActionRunning, solutionFolder));
+            var success = callback(nearestSlnFilesFound[0], projectFiles, solutionFolder);
+
+            if (!success)
             {
                 Reporter.Error.WriteLine(string.Format(LocalizableStrings.AddProjToSlnPostActionFailed, string.Join(" ", projectFiles), nearestSlnFilesFound[0], solutionFolder));
-                Reporter.Error.WriteCommandOutput(commandResult);
-                Reporter.Error.WriteLine(string.Empty);
                 return false;
             }
             else

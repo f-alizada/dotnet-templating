@@ -943,6 +943,15 @@ namespace Microsoft.TemplateEngine.Cli {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Host does not implement {0} callback..
+        /// </summary>
+        internal static string HostDoesntImplementCallback {
+            get {
+                return ResourceManager.GetString("HostDoesntImplementCallback", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to load dotnet CLI host data for template {0} from cache..
         /// </summary>
         internal static string HostSpecificDataLoader_Warning_FailedToRead {
@@ -1254,6 +1263,15 @@ namespace Microsoft.TemplateEngine.Cli {
         internal static string PostAction_ProcessStartProcessor_Error_ConfigMissingExecutable {
             get {
                 return ResourceManager.GetString("PostAction_ProcessStartProcessor_Error_ConfigMissingExecutable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to resolve executable..
+        /// </summary>
+        internal static string PostAction_ProcessStartProcessor_Error_FailedToResolveExecutable {
+            get {
+                return ResourceManager.GetString("PostAction_ProcessStartProcessor_Error_FailedToResolveExecutable", resourceCulture);
             }
         }
         

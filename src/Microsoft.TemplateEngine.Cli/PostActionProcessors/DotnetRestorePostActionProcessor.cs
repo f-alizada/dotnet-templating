@@ -83,9 +83,7 @@ namespace Microsoft.TemplateEngine.Cli.PostActionProcessors
                 }
                 else
                 {
-                    Dotnet restoreCommand = Dotnet.Restore(pathToRestore).ForwardStdErr().ForwardStdOut();
-                    Dotnet.Result commandResult = restoreCommand.Execute();
-                    succeeded = commandResult.ExitCode == 0;
+                    succeeded = false;
                 }
 
                 if (!succeeded)

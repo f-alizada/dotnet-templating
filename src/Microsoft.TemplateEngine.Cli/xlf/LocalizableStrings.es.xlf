@@ -508,6 +508,11 @@ The header is followed by the list of parameters and their errors (might be seve
         <target state="translated">Ejemplos:</target>
         <note />
       </trans-unit>
+      <trans-unit id="HostDoesntImplementCallback">
+        <source>Host does not implement {0} callback.</source>
+        <target state="new">Host does not implement {0} callback.</target>
+        <note />
+      </trans-unit>
       <trans-unit id="HostSpecificDataLoader_Warning_FailedToRead">
         <source>Failed to load dotnet CLI host data for template {0} from cache.</source>
         <target state="translated">No se pudieron cargar los datos del host de la CLI de dotnet para la plantilla {0} desde la memoria caché.</target>
@@ -744,6 +749,11 @@ The header is followed by the list of parameters and their errors (might be seve
       <trans-unit id="PostAction_ProcessStartProcessor_Error_ConfigMissingExecutable">
         <source>Failed to run the command: argument 'executable' is missing in post action configuration.</source>
         <target state="translated">No se pudo ejecutar el comando: falta el argumento \"executable\" en la configuración de la acción posterior.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="PostAction_ProcessStartProcessor_Error_FailedToResolveExecutable">
+        <source>Failed to resolve executable.</source>
+        <target state="new">Failed to resolve executable.</target>
         <note />
       </trans-unit>
       <trans-unit id="ProcessingPostActions">
