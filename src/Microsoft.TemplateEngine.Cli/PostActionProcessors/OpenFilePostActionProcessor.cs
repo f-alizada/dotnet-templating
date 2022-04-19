@@ -12,36 +12,34 @@ namespace Microsoft.TemplateEngine.Cli.PostActionProcessors;
 /// <summary>
 /// A PostAction that opens the specified file in the default handler for that file type.
 /// </summary>
-/// <remarks>
-/// By necessity, this uses a different processor on each platform.
-/// For windows, it uses powershell's Invoke-Item.
-/// For linux, it uses xdg-open.
-/// For mac, it uses open.
-/// </remarks>
 internal class OpenFilePostActionProcessor : IPostActionProcessor
 {
-    internal static readonly Guid ActionProcessorId = new Guid("D396686C-DE0E-4DE6-906D-291CD29FC5DE");
+    internal static readonly Guid ActionProcessorId = new Guid("84C0DA21-51C8-4541-9940-6CA19AF04EE6");
 
     public Guid Id => ActionProcessorId;
 
     public bool Process(IEngineEnvironmentSettings environment, IPostAction action, ICreationEffects creationEffects, ICreationResult templateCreationResult, string outputBasePath)
     {
-        var fileToOpen = DiscoverFilePath(outputBasePath, action.Args);
-        if (fileToOpen is null)
+        var filesToOpen = DiscoverFilePaths(action.Args, outputBasePath, creationEffects.CreationResult);
+        if (filesToOpen is null)
         {
             return false;
         }
-        (string cmd, string[] args) = GetCommandAndArgs(fileToOpen);
-        return ExecuteProcess(cmd, args);
+        return ExecuteProcesses(filesToOpen);
     }
 
-    private static bool ExecuteProcess(string cmd, string[] args)
+    private static bool ExecuteProcesses(IReadOnlyList<string> filesToOpen)
     {
-        var procArgs = new ProcessStartInfo(cmd, string.Join(" ", args))
+        return filesToOpen.All(ExecuteProcess);
+    }
+
+    private static bool ExecuteProcess(string fileToOpen)
+    {
+        // Process.Start with UseShellExecute set to true does all of the finding of the default handler for the file type
+        // for us, so we basically have zero work to do.
+        var procArgs = new ProcessStartInfo(fileToOpen)
         {
-            UseShellExecute = false,
-            RedirectStandardError = true,
-            RedirectStandardOutput = true
+            UseShellExecute = true
         };
 
         var proc = System.Diagnostics.Process.Start(procArgs);
@@ -66,32 +64,30 @@ internal class OpenFilePostActionProcessor : IPostActionProcessor
         }
     }
 
-    private static (string Cmd, string[] Args) GetCommandAndArgs(string fileToOpen)
+    private static IReadOnlyList<string> DiscoverFilePaths(IReadOnlyDictionary<string, string> actionArgs, string basePath, ICreationResult creationResults)
     {
-        if (System.OperatingSystem.IsLinux())
+        var fileIndexes = FileIndexes(actionArgs);
+        var filePaths = new List<string>(fileIndexes.Count);
+        foreach (var index in fileIndexes)
         {
-            return ("xdg-open", new[] { fileToOpen });
+            if (index < creationResults.PrimaryOutputs.Count && creationResults.PrimaryOutputs[index] is { } output)
+            {
+                filePaths.Add(Path.Combine(basePath, output.Path));
+            }
         }
-        else if (System.OperatingSystem.IsMacOS())
-        {
-            return ("open", new[] { fileToOpen });
-        }
-        else
-        {
-            return ("powershell", new[] { "-NoProfile", "-NoLogo", "-NonInteractive", "-Command", $"Invoke-Item \"{fileToOpen}\"" });
-        }
+        return filePaths;
     }
 
-    private static string? DiscoverFilePath(string outputBasePath, IReadOnlyDictionary<string, string> actionArgs)
+    private static List<int> FileIndexes(IReadOnlyDictionary<string, string> actionArgs)
     {
-        if (actionArgs.TryGetValue("file", out string? file))
+        if (actionArgs.TryGetValue("files", out string? file))
         {
-            return file;
+            return file.Split(';').Select(int.Parse).ToList();
         }
         else
         {
             Reporter.Error.Write(""); //LocalizableStrings.PostAction_OpenFileProcessor_Error_ConfigMissingFile)
-            return null;
+            return new List<int>();
         }
     }
 

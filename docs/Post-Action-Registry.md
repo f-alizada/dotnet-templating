@@ -46,7 +46,7 @@ Restores the project mentioned in primary outputs:
 ```
 "primaryOutputs": [
     {
-      "path": "MyTestProject.csproj"        
+      "path": "MyTestProject.csproj"
     }
 ],
 "postActions": [{
@@ -130,6 +130,8 @@ Opens a file in the editor. For command line cases this post action will be igno
      conditions as the primary outputs might be necessary.
  - **Supported in**:
    - since `Visual Studio 2017.3 Preview 1`
+   - `dotnet new3`
+   - `dotnet new` (7.0.0 or higher)
 
 ### Example
 
@@ -196,11 +198,11 @@ Note: when using `targetFiles` argument it should contain the path to the file i
  - **Action ID** : `D396686C-DE0E-4DE6-906D-291CD29FC5DE`
  - **Specific Configuration** :
    - `args`:
-     - `projectFiles` (string|array) (optional): 
+     - `projectFiles` (string|array) (optional):
         - `string`: A semicolon delimited list of files that should be added to solution. If not specified, primary outputs will be used instead.
         - `array`: An array of files that should be added to solution. If not specified, primary outputs will be used instead.
      - `primaryOutputIndexes` (string) (optional): A semicolon delimited list of indexes to the primary outputs. If not specified, all primary outputs will be added. Note: If primary outputs are conditional, multiple post actions with the same conditions as the primary outputs might be necessary.
-     - `solutionFolder` (string) (optional) (supported in 5.0.200 or higher): the destination solution folder path to add the projects to. 
+     - `solutionFolder` (string) (optional) (supported in 5.0.200 or higher): the destination solution folder path to add the projects to.
  - **Supported in**:
    - `dotnet new3`
    - `dotnet new` (2.0.0 or higher)
@@ -217,7 +219,7 @@ Adds `MyTestProject.csproj` to solution in output directory or its closest paren
 ```
 "primaryOutputs": [
     {
-      "path": "MyTestProject.csproj"        
+      "path": "MyTestProject.csproj"
     }
 ],
 "postActions": [{
@@ -306,7 +308,7 @@ Command is printed only if defined in post action arguments.
 
  - **Action ID** : `AC1156F7-BB77-4DB8-B28F-24EEBCCA1E5C`
  - **Specific Configuration** :
-    - `args`: 
+    - `args`:
      - `executable` (string) (optional): command to run
      - `args` (string) (optional): arguments to use
  - **Supported in**:
@@ -329,3 +331,10 @@ Command is printed only if defined in post action arguments.
   "continueOnError": true
 }]
 ```
+
+# Open a file
+
+Opens the given file using the default handler for that file type.
+On Windows, uses `Invoke-Item` from `powershell`.
+On MacOs, uses `open`.
+On Linux, uses `xdg-open`.

@@ -498,7 +498,8 @@
                         "cb9a6cf3-4f5c-4860-b9d2-03a574959774",
                         "210D431B-A78B-4D2F-B762-4ED3E3EA9025",
                         "D396686C-DE0E-4DE6-906D-291CD29FC5DE",
-                        "84C0DA21-51C8-4541-9940-6CA19AF04EE6"
+                        "84C0DA21-51C8-4541-9940-6CA19AF04EE6",
+                        "3C431D59-A66B-44BB-A2C8-8EC15222AEF7"
                       ]
                     }
                   }
@@ -662,7 +663,7 @@
                 }
               },
               {
-                "description": "Open in editor - Adds one or more of the primary outputs to the first sln file found (searches up the directory tree from the output folder)",
+                "description": "Open in editor - opens the selected file in the default handler for that file type",
                 "properties": {
                   "actionId": {
                     "enum": [ "84C0DA21-51C8-4541-9940-6CA19AF04EE6" ]
