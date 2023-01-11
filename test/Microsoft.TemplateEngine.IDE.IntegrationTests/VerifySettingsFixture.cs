@@ -1,16 +1,21 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System;
-using VerifyTests;
-
 namespace Microsoft.TemplateEngine.IDE.IntegrationTests
 {
     public class VerifySettingsFixture : IDisposable
     {
+        private static bool called;
+
         public VerifySettingsFixture()
         {
-            VerifierSettings.DerivePathInfo(
+            if (called)
+            {
+                return;
+            }
+            called = true;
+
+            DerivePathInfo(
                 (_, _, type, method) => new(
                     directory: "Approvals",
                     typeName: type.Name,
