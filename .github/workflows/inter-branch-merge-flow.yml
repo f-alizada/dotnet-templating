@@ -10,4 +10,6 @@ permissions:
 
 jobs:
   Merge:
-    uses: dotnet/arcade/.github/workflows/inter-branch-merge-base.yml@main
+    uses: f-alizada/arcade/.github/workflows/inter-branch-merge-base.yml@dev/f-alizada/longpath
+    with:
+      script_version: 'dev/f-alizada/longpath'
